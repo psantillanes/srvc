@@ -37,9 +37,12 @@ window.SRVC_SEED = {
       engine: 'T5 2.0 Drive-E', trans: 'Aisin 8-spd · AWD', oil: 'VCC RBS0-2AE 0W-20',
       vin: '', paintCode: '', paintName: 'White', paintHex: '#F4F4F0',
       inService: '2018-02-28', shop: 'Private Volvo mechanic',
-      odo: [],
+      odo: [
+        { date: '2025-12-19', miles: 53656 },
+        { date: '2026-11-09', miles: 59607 }
+      ],
       items: [
-        { id: 'oil', name: 'Oil & filter', mi: 10000, mo: 12, last: null, notes: 'Dash reminder reset 02.15.26: 360 days / 9,941 mi. Mileage at that service not recorded.' },
+        { id: 'oil', name: 'Oil & filter', mi: 10000, mo: 12, last: null, notes: 'Dash countdown 11.09.26: 93 days / 4,675 mi to service. Feb 2026 mileage estimated from that.' },
         { id: 'plugs', name: 'Spark plugs', mi: 60000, mo: null, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'Part of the 60k service. Declined 02.15.26 ($660 tune-up quote incl. oil).' },
         { id: 'air', name: 'Engine air filter', mi: 60000, mo: null, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'Part of the 60k service. Not listed in the 30k/40k dealer services on Carfax.' },
         { id: 'cabin', name: 'Cabin filter', mi: 20000, mo: 24, last: null, notes: 'Part of the 60k service.' },
@@ -76,7 +79,7 @@ window.SRVC_SEED = {
     { id: 'x1', car: 'xc40', date: '2024-07-09', miles: 41750, items: [], by: 'Shop', cost: 250, notes: 'Howard Orloff Volvo. Check engine light P0442: EVAP purge valve and line replaced. Assurant warranty paid the rest. 75-point inspection, software update.' },
     { id: 'c10', car: 'xc40', date: '2024-11-04', miles: 44684, items: ['oil'], by: 'Shop', cost: null, notes: 'Howard Orloff Volvo (Carfax).' },
     { id: 'x2', car: 'xc40', date: '2025-12-19', miles: 53656, items: [], by: 'Shop', cost: 307.5, notes: 'Volvo Oak Park. Diagnosed Volvo On Call message: backup battery expired (declined). Front brakes and oil recommended (declined).' },
-    { id: 'x3', car: 'xc40', date: '2026-02-15', miles: null, items: ['oil', 'pads'], by: 'Shop', cost: 790, notes: 'Private Volvo mechanic. Front pads and rotors, oil change. Declined 60k service.' },
+    { id: 'x3', car: 'xc40', date: '2026-02-15', miles: 54282, items: ['oil', 'pads'], by: 'Shop', cost: 790, notes: 'Private Volvo mechanic. Front pads and rotors, oil change. Declined 60k service. Mileage estimated from the dash countdown.' },
     { id: 'h8', car: 'gti', date: '2025-12-04', miles: 55182, items: ['battery', 'cabin'], by: 'Shop', cost: 302.97, notes: 'City VW. Warranty paid the rest.' }
   ]
 };
