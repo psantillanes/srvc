@@ -2,7 +2,7 @@
 // Intervals: mi = miles, mo = months. "last" = most recent known service.
 // last.assumed marks a base date used because no record exists.
 window.SRVC_SEED = {
-  version: 1,
+  version: 2,
   cars: [
     {
       id: 'gti', unit: '01', name: 'GTI',
@@ -34,16 +34,23 @@ window.SRVC_SEED = {
     {
       id: 'xc40', unit: '02', name: 'XC40',
       make: 'Volvo', model: 'XC40', year: 2019, trim: 'R-Design',
-      engine: '', trans: '', oil: '', vin: '', paintCode: '', paintName: '', paintHex: '',
-      inService: '', shop: '',
+      engine: 'T5 2.0T Drive-E AWD', trans: 'Aisin 8-spd auto', oil: 'VCC RBS0-2AE 0W-20',
+      vin: '', paintCode: '', paintName: '', paintHex: '',
+      inService: '2018-02-28', shop: 'Private Volvo mechanic',
       odo: [],
       items: [
-        { id: 'oil', name: 'Oil & filter', mi: 10000, mo: 12, last: null, notes: '' },
+        { id: 'oil', name: 'Oil & filter', mi: 10000, mo: 12, last: { date: '2026-02-15', miles: null }, notes: 'Dash reminder reset 02.15.26: 360 days / 9,941 mi. Mileage at that service not recorded.' },
+        { id: 'plugs', name: 'Spark plugs', mi: 60000, mo: null, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'Part of the 60k service. Declined 02.15.26 ($660 tune-up quote incl. oil).' },
+        { id: 'air', name: 'Engine air filter', mi: 60000, mo: null, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'Part of the 60k service. No record.' },
+        { id: 'cabin', name: 'Cabin filter', mi: 20000, mo: 24, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'Part of the 60k service. No record.' },
+        { id: 'brakefluid', name: 'Brake fluid', mi: null, mo: 24, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'Volvo: every 2 years. No record.' },
+        { id: 'voc', name: 'VOC backup battery', mi: null, mo: null, last: null, flag: 'red', notes: 'Expired per Volvo Oak Park 12.19.25. SOS / crash call may not work. Dealer only, quoted $431.81.' },
         { id: 'rotation', name: 'Tire rotation', mi: 10000, mo: null, last: null, notes: '' },
-        { id: 'brakefluid', name: 'Brake fluid', mi: null, mo: 24, last: null, notes: '' },
-        { id: 'cabin', name: 'Cabin filter', mi: 20000, mo: 24, last: null, notes: '' },
-        { id: 'air', name: 'Engine air filter', mi: 40000, mo: null, last: null, notes: '' },
-        { id: 'plugs', name: 'Spark plugs', mi: 60000, mo: null, last: null, notes: 'Check the Volvo schedule for this engine.' },
+        { id: 'pads', name: 'Front brakes', mi: null, mo: null, last: { date: '2026-02-15', miles: null }, notes: 'Pads and rotors, private Volvo mechanic.' },
+        { id: 'rearbrakes', name: 'Rear brakes', mi: null, mo: null, last: null, flag: 'yellow', notes: 'No record. Ask for pad thickness at the next visit.' },
+        { id: 'battery', name: '12V battery', mi: null, mo: null, last: null, flag: 'yellow', notes: 'Possibly original. Load test before winter.' },
+        { id: 'trans', name: 'Transmission fluid', mi: 60000, mo: null, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'Volvo lists it as lifetime; independents suggest a drain-and-fill around 60k.' },
+        { id: 'awd', name: 'AWD coupling fluid', mi: 40000, mo: null, last: { date: '2018-02-28', miles: 0, assumed: true }, notes: 'No Volvo interval; commonly every 40-60k. Confirm the car is a T5 (AWD).' },
         { id: 'wipers', name: 'Wiper blades', mi: null, mo: 12, last: null, notes: '' }
       ],
       scans: []
@@ -57,6 +64,9 @@ window.SRVC_SEED = {
     { id: 'h5', car: 'gti', date: '2024-08-15', miles: 40663, items: ['oil', 'rotation'], by: 'Shop', cost: null, notes: 'Crain VW (Carfax)' },
     { id: 'h6', car: 'gti', date: '2025-07-15', miles: 50805, items: ['oil', 'brakefluid', 'rotation'], by: 'Shop', cost: null, notes: 'Crain VW. Fuel injection service too.' },
     { id: 'h7', car: 'gti', date: '2025-12-03', miles: 55182, items: ['coolant'], by: 'Shop', cost: 298.98, notes: 'City VW. Multi-point inspection.' },
+    { id: 'x1', car: 'xc40', date: '2024-07-09', miles: 41750, items: [], by: 'Shop', cost: 250, notes: 'Howard Orloff Volvo. Check engine light P0442: EVAP purge valve and line replaced. Assurant warranty paid the rest. 75-point inspection, software update.' },
+    { id: 'x2', car: 'xc40', date: '2025-12-19', miles: 53654, items: [], by: 'Shop', cost: 307.5, notes: 'Volvo Oak Park. Diagnosed Volvo On Call message: backup battery expired (declined). Front brakes and oil recommended (declined).' },
+    { id: 'x3', car: 'xc40', date: '2026-02-15', miles: null, items: ['oil', 'pads'], by: 'Shop', cost: 790, notes: 'Private Volvo mechanic. Front pads and rotors, oil change. Declined 60k service.' },
     { id: 'h8', car: 'gti', date: '2025-12-04', miles: 55182, items: ['battery', 'cabin'], by: 'Shop', cost: 302.97, notes: 'City VW. Warranty paid the rest.' }
   ]
 };

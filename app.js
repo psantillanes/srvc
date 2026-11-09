@@ -17,6 +17,24 @@
     catch (e) { toast('Could not save. Storage full?'); }
   }
   db = load();
+  migrate();
+
+  // One-time upgrades for data saved by an older seed. Only fills in a car the user hasn't touched.
+  function migrate() {
+    var seed = window.SRVC_SEED, v = db.version || 1;
+    if (v >= seed.version) return;
+    if (v < 2) {
+      var i = db.cars.findIndex(function (c) { return c.id === 'xc40'; });
+      var fresh = seed.cars.filter(function (c) { return c.id === 'xc40'; })[0];
+      var untouched = i >= 0 && !db.cars[i].odo.length && !db.log.some(function (l) { return l.car === 'xc40'; });
+      if (untouched && fresh) {
+        db.cars[i] = clone(fresh);
+        db.log = db.log.concat(clone(seed.log.filter(function (l) { return l.car === 'xc40'; })));
+      }
+    }
+    db.version = seed.version;
+    save();
+  }
   if (navigator.storage && navigator.storage.persist) { navigator.storage.persist().catch(function () {}); }
 
   // ---------- helpers ----------
@@ -185,7 +203,7 @@
         '</div></a>';
     });
 
-    h += '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.1</span></footer>';
+    h += '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.2</span></footer>';
     return h;
   }
 
@@ -379,7 +397,7 @@
       '<button class="btn solid" data-act="export">Export backup <span class="arr">▸▸▸</span></button>' +
       '<label class="btn" for="imp">Import backup</label><input id="imp" type="file" accept="application/json,.json" class="sr" data-act="import">' +
       '<button class="btn danger" data-act="reset" style="margin-top:20px">Reset to starting data</button>' +
-      '<footer class="foot m"><span>SRVC v1.1</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
+      '<footer class="foot m"><span>SRVC v1.2</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
   }
 
   function viewMissing() { return '<nav class="nav m"><a href="#/">◂ Units</a></nav><div class="empty m box">Not found.</div>'; }
