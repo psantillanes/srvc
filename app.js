@@ -169,15 +169,6 @@
     db.cars.forEach(function (c) {
       var odo = odoLatest(c);
       var spec = [c.make, c.year].filter(Boolean).join(' · ');
-      if (!odo) {
-        h += '<a class="box" href="#/car/' + c.id + '" style="display:flex">' +
-          '<div style="padding:12px;flex:1;min-width:0"><div class="m s10">[ Unit ' + esc(c.unit) + ' ] ' + esc(spec) + '</div>' +
-          '<div class="x" style="font-size:' + fitSize(c.name, 220, 56) + 'px;line-height:.9;margin-top:8px">' + esc(c.name) + '</div></div>' +
-          '<div class="hatch" style="width:118px;border-left:2px solid #161616;padding:12px 10px;display:flex;flex-direction:column;justify-content:space-between">' +
-          '<div class="m s8" style="line-height:1.5">Status:<br><b>Awaiting data</b></div>' +
-          '<div class="m s8 mute" style="line-height:1.5">ODO ——,———<br>Tap to start ▸</div></div></a>';
-        return;
-      }
       var list = sorted(c), n = counts(list);
       var next = list.filter(function (x) { return x.s.st === 'ovr' || x.s.st === 'due'; })[0];
       var cols = [];
@@ -185,18 +176,19 @@
       if (n.due) cols.push([n.due, 'c-due', 'Due soon']);
       if (n.ok) cols.push([n.ok, 'c-ok', 'OK']);
       if (n.unk) cols.push([n.unk, 'c-unk', 'No rec']);
-      var tpl = cols.map(function (x) { return x[0] + 'fr'; }).join(' ');
+      var tpl = cols.map(function (x) { return 'minmax(max-content, ' + x[0] + 'fr)'; }).join(' ');
       h += '<a class="card" href="#/car/' + c.id + '" aria-label="Open unit ' + esc(c.unit) + ', ' + esc(c.name) + '">' +
         '<div class="strip m"><span>[ Unit ' + esc(c.unit) + ' ]</span><span>' + esc([c.make, c.year].concat(c.engine ? [c.engine.split(' ').slice(-2).join(' ')] : []).join(' · ')) + '</span><span>▸</span></div>' +
         '<div class="row" style="padding:12px 12px 0;align-items:flex-start"><div class="x" style="font-size:' + fitSize(c.name, 250, 96) + 'px;line-height:.82">' + esc(c.name) + '</div>' +
         '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' + REG +
         '<div class="m s8" style="text-align:right;line-height:1.4">' + esc(c.trim || '') + '<br>' + esc((c.engine || '').split(' ')[0]) + '</div></div></div>' +
         '<div class="row" style="padding:14px 12px 12px;align-items:flex-end;border-bottom:1px dashed #161616"><div>' +
-        '<div class="m s8 mute">Odometer</div><div class="m b" style="font-size:34px;letter-spacing:0;line-height:1">' + odoFmt(odo.miles) + '<span style="font-size:13px"> MI</span></div></div>' +
-        '<div class="m s8 mute" style="text-align:right;line-height:1.5">Last entry<br>' + fmtDate(lastDate(c)) + '</div></div>' +
-        '<div style="padding:12px"><div class="bar3" style="grid-template-columns:' + tpl + '">' +
+        '<div class="m s8 mute">Odometer</div><div class="m b" style="font-size:34px;letter-spacing:0;line-height:1">' + odoFmt(odo ? odo.miles : null) + '<span style="font-size:13px"> MI</span></div></div>' +
+        (odo ? '<div class="m s8 mute" style="text-align:right;line-height:1.5">Last entry<br>' + fmtDate(lastDate(c)) + '</div></div>'
+             : '<div class="m s8" style="text-align:right;line-height:1.5">Status<br><b>Awaiting data</b></div></div>') +
+        '<div style="padding:12px"><div class="bar3" style="gap:8px;grid-template-columns:' + tpl + '">' +
         cols.map(function (x) { return '<div class="' + x[1] + '"></div>'; }).join('') + '</div>' +
-        '<div class="m s10 b" style="display:grid;gap:3px;margin-top:5px;grid-template-columns:' + tpl + '">' +
+        '<div class="m s10 b" style="display:grid;gap:8px;margin-top:5px;grid-template-columns:' + tpl + '">' +
         cols.map(function (x) { return '<span>' + p2(x[0]) + ' ' + x[2] + '</span>'; }).join('') + '</div>' +
         (next ? '<div class="m s11 row" style="margin-top:12px;border:1.5px solid #161616;padding:8px 10px"><span>Next ▸ <b>' + esc(next.it.name) + '</b></span>' + chip(next.s) + '</div>'
               : '<div class="m s11" style="margin-top:12px;border:1.5px solid #161616;padding:8px 10px">All items nominal</div>') +
