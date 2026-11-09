@@ -185,9 +185,7 @@
         '</div></a>';
     });
 
-    h += '<div class="btns" style="margin-top:auto"><a class="btn" href="#/miles">+ Mileage</a>' +
-      '<a class="btn solid" href="#/log">+ Log service <span class="arr">▸▸▸</span></a></div>' +
-      '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.0</span></footer>';
+    h += '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.1</span></footer>';
     return h;
   }
 
@@ -202,7 +200,7 @@
     var codeCount = lastScan ? lastScan.codes.split(/[\s,]+/).filter(Boolean).length : 0;
 
     var h = '<nav class="nav m"><a href="#/">◂ Units</a><span class="s10 mute">Unit ' + esc(c.unit) + ' / ' + p2(db.cars.length) + '</span></nav>' +
-      '<section class="box"><div class="row" style="padding:12px 12px 10px;border-bottom:2px solid #161616;align-items:flex-end">' +
+      '<section class="box" id="hero"><div class="row" style="padding:12px 12px 10px;border-bottom:2px solid #161616;align-items:flex-end">' +
       '<h1 class="x" style="margin:0;font-size:' + fitSize(c.name, 260, 104) + 'px;line-height:.8">' + esc(c.name) + '</h1>' +
       '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:16px;padding-bottom:6px;padding-right:4px">' + swatch +
       '<div class="m s8" style="text-align:right;line-height:1.4">' + esc(c.paintCode || '') + '<br>' + esc(c.paintName || '') + '</div></div></div>' +
@@ -227,8 +225,7 @@
           '<div class="right"><div class="m s11 b">' + (x.s.st === 'ok' && x.s.label === 'Done' && x.s.last ? fmtDate(x.s.last.date) : '&nbsp;') + '</div>' + chip(x.s) + '</div></a>';
       }).join('') : '<div class="empty m mute">Nothing in this filter.</div>') + '</div>' +
 
-      '<div class="btns"><a class="btn" href="#/history/' + c.id + '">History [' + p2(logsFor(c.id).length) + ']</a>' +
-      '<a class="btn solid" href="#/log/' + c.id + '">+ Log service <span class="arr">▸▸▸</span></a></div>' +
+      '<a class="btn" href="#/history/' + c.id + '">Service history [' + p2(logsFor(c.id).length) + '] ▸</a>' +
 
       '<section class="box"><div class="strip m"><span>Fault codes // OBDeleven</span><span>[ ' + p2(c.scans.length) + ' ]</span></div>' +
       '<div class="row" style="padding:12px"><div><div class="x" style="font-size:40px;line-height:.9">' + p2(codeCount) + '</div>' +
@@ -248,7 +245,7 @@
 
   var logSel = {};
   function viewLog(cid) {
-    var c = car(cid) || db.cars[0];
+    var c = car(cid) || car(lastCar) || db.cars[0];
     var odo = odoLatest(c);
     var h = '<nav class="nav m"><a href="' + (car(cid) ? '#/car/' + c.id : '#/') + '">✕ Cancel</a><span class="s10 mute">Form SL-01 // New record</span></nav>' +
       '<div style="border-bottom:2px solid #161616;padding-bottom:10px;margin-top:-8px"><h1 class="x" style="margin:0;font-size:44px;line-height:.9">LOG<br>SERVICE</h1>' +
@@ -280,7 +277,7 @@
   }
 
   function viewMiles(cid) {
-    var c = car(cid) || db.cars[0], odo = odoLatest(c);
+    var c = car(cid) || car(lastCar) || db.cars[0], odo = odoLatest(c);
     return '<nav class="nav m"><a href="' + (car(cid) ? '#/car/' + c.id : '#/') + '">✕ Cancel</a><span class="s10 mute">Form OD-01 // Odometer</span></nav>' +
       '<div style="border-bottom:2px solid #161616;padding-bottom:10px;margin-top:-8px"><h1 class="x" style="margin:0;font-size:44px;line-height:.9">LOG<br>MILEAGE</h1></div>' +
       '<form data-form="miles" data-car="' + c.id + '" style="display:flex;flex-direction:column;gap:18px">' +
@@ -339,16 +336,16 @@
     return '<nav class="nav m"><a href="#/car/' + c.id + '">◂ ' + esc(c.name) + '</a><span class="s10 mute">Service history</span></nav>' +
       '<div class="row" style="border-bottom:2px solid #161616;padding-bottom:10px;align-items:flex-end"><h1 class="x" style="margin:0;font-size:44px;line-height:.9">HISTORY</h1>' +
       '<div class="m s10" style="text-align:right;line-height:1.5">' + p2(list.length) + ' entries<br>$' + num(spent) + ' logged</div></div>' +
-      (list.length ? '<div class="items">' + list.map(logRow).join('') + '</div>' : '<div class="empty m mute box">No entries yet.</div>') +
-      '<a class="btn solid" href="#/log/' + c.id + '">+ Log service <span class="arr">▸▸▸</span></a>';
+      (list.length ? '<div class="items">' + list.map(logRow).join('') + '</div>' : '<div class="empty m mute box">No entries yet.</div>');
   }
 
   function viewScan(cid) {
-    var c = car(cid); if (!c) return viewMissing();
+    var c = car(cid) || car(lastCar) || db.cars[0];
     var list = c.scans.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
-    return '<nav class="nav m"><a href="#/car/' + c.id + '">◂ ' + esc(c.name) + '</a><span class="s10 mute">Form FC-01 // Scan note</span></nav>' +
+    return '<nav class="nav m"><a href="' + (car(cid) ? '#/car/' + c.id : '#/') + '">✕ Close</a><span class="s10 mute">Form FC-01 // Scan note</span></nav>' +
       '<div style="border-bottom:2px solid #161616;padding-bottom:10px;margin-top:-8px"><h1 class="x" style="margin:0;font-size:44px;line-height:.9">FAULT<br>CODES</h1></div>' +
       '<form data-form="scan" data-car="' + c.id + '" style="display:flex;flex-direction:column;gap:16px">' +
+      carSeg(c.id, 'scancar') +
       '<div class="g2"><div><label class="lab" for="s-date">Date</label><input id="s-date" name="date" class="in" type="date" value="' + todayISO() + '" required></div>' +
       '<div><label class="lab" for="s-mi">Odometer</label><input id="s-mi" name="miles" class="in" inputmode="numeric"></div></div>' +
       '<div><label class="lab" for="s-codes"><span>Codes</span><span class="mute">Space or comma separated</span></label><input id="s-codes" name="codes" class="in" placeholder="P0301, 01314" autocapitalize="characters"></div>' +
@@ -382,7 +379,7 @@
       '<button class="btn solid" data-act="export">Export backup <span class="arr">▸▸▸</span></button>' +
       '<label class="btn" for="imp">Import backup</label><input id="imp" type="file" accept="application/json,.json" class="sr" data-act="import">' +
       '<button class="btn danger" data-act="reset" style="margin-top:20px">Reset to starting data</button>' +
-      '<footer class="foot m"><span>SRVC v1.0</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
+      '<footer class="foot m"><span>SRVC v1.1</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
   }
 
   function viewMissing() { return '<nav class="nav m"><a href="#/">◂ Units</a></nav><div class="empty m box">Not found.</div>'; }
@@ -401,12 +398,73 @@
     else if (v === 'data') html = viewData();
     else html = viewDash();
     app.innerHTML = html;
+    if (v === 'car' && car(a)) lastCar = a;
+    var dockOn = !v || v === 'car' || v === 'history' || v === 'data';
+    var ctx = (v === 'car' || v === 'history') && car(a) ? a : null;
+    renderDock(dockOn, ctx);
+    renderMini(v === 'car' ? car(a) : null);
+  }
+
+  // ---------- dock ----------
+  var lastCar = null, menuOpen = false, dockCtx = null;
+  var dock = document.createElement('div'); dock.id = 'dockwrap'; document.body.appendChild(dock);
+  var mini = document.createElement('div'); mini.id = 'mini'; mini.setAttribute('aria-hidden', 'true'); document.body.appendChild(mini);
+  var GRID = function (col) { return '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="none" stroke="' + col + '" stroke-width="2"/><rect x="12" y="2" width="8" height="8" fill="none" stroke="' + col + '" stroke-width="2"/><rect x="2" y="12" width="18" height="8" fill="none" stroke="' + col + '" stroke-width="2"/></svg>'; };
+  function renderDock(on, ctx) {
+    document.body.classList.toggle('has-dock', on);
+    dockCtx = ctx;
+    if (!on) { menuOpen = false; dock.innerHTML = ''; return; }
+    var home = !ctx && !location.hash.match(/^#\/(data)/) ;
+    var q = ctx ? '/' + ctx : '';
+    var h = '';
+    if (menuOpen) {
+      var c = ctx && car(ctx);
+      h += '<div class="scrim" data-dock="close"></div>' +
+        '<div class="sheet" role="menu" aria-label="New record">' +
+        '<div class="strip m"><span>New record' + (c ? ' // Unit ' + esc(c.unit) + ' ' + esc(c.name) : '') + '</span><button data-dock="close" aria-label="Close menu">✕</button></div>' +
+        '<a role="menuitem" class="m sheet-main" href="#/log' + q + '">Log service <span class="arr">▸▸▸</span></a>' +
+        '<a role="menuitem" class="m" href="#/miles' + q + '">Update mileage <span class="mute s10">' + (c && odoLatest(c) ? odoFmt(odoLatest(c).miles) : 'Odometer') + '</span></a>' +
+        '<a role="menuitem" class="m" href="#/scan' + q + '">Fault code note <span class="mute s10">OBDeleven</span></a></div>';
+    }
+    h += '<nav id="dock" aria-label="Main"><a href="#/" class="d-home"' + (home ? ' aria-current="page"' : '') + ' aria-label="All units">' + GRID(home ? '#ECEBE6' : '#161616') + '</a>' +
+      db.cars.map(function (c) {
+        var n = counts(sorted(c)).ovr;
+        return '<a href="#/car/' + c.id + '" class="d-car x"' + (ctx === c.id ? ' aria-current="page"' : '') + ' aria-label="' + esc(c.name) + (n ? ', ' + n + ' overdue' : '') + '">' + esc(c.name) +
+          (n ? '<span class="badge m">' + n + '</span>' : '') + '</a>';
+      }).join('') +
+      '<button class="d-log m" data-dock="menu" aria-haspopup="menu" aria-expanded="' + menuOpen + '">' +
+      (menuOpen ? '<svg width="16" height="16" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="3"/></svg>Close'
+                : '<svg width="16" height="16" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2v18M2 11h18" stroke="currentColor" stroke-width="3.5"/></svg>Log') + '</button></nav>';
+    dock.innerHTML = h;
+  }
+  dock.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-dock]');
+    if (el) { menuOpen = el.getAttribute('data-dock') === 'menu' ? !menuOpen : false; renderDock(true, dockCtx); return; }
+    if (e.target.closest('a')) menuOpen = false;
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuOpen) { menuOpen = false; renderDock(true, dockCtx); } });
+
+  // Compact header that appears once the car's title scrolls away.
+  var heroObs = null;
+  function renderMini(c) {
+    if (heroObs) { heroObs.disconnect(); heroObs = null; }
+    mini.classList.remove('on');
+    if (!c) { mini.innerHTML = ''; return; }
+    var odo = odoLatest(c), n = counts(sorted(c));
+    var cols = [[n.ovr, 'c-ovr'], [n.due, 'c-due'], [n.ok, 'c-ok'], [n.unk, 'c-unk']].filter(function (x) { return x[0]; });
+    mini.innerHTML = '<div class="mini-in"><div class="strip m"><span>[ Unit ' + esc(c.unit) + ' ]</span><span class="x" style="font-size:14px;letter-spacing:0;line-height:1">' + esc(c.name) + '</span><span>' + (odo ? odoFmt(odo.miles) + ' MI' : '— MI') + '</span></div>' +
+      (cols.length ? '<div class="bar3" style="height:8px;margin-top:4px;grid-template-columns:' + cols.map(function (x) { return x[0] + 'fr'; }).join(' ') + '">' + cols.map(function (x) { return '<div class="' + x[1] + '"></div>'; }).join('') + '</div>' : '') + '</div>';
+    var hero = document.getElementById('hero');
+    if (!hero || !('IntersectionObserver' in window)) return;
+    heroObs = new IntersectionObserver(function (es) { mini.classList.toggle('on', !es[0].isIntersecting); }, { threshold: 0 });
+    heroObs.observe(hero);
   }
   var prevView = null;
   window.addEventListener('hashchange', function () {
     var v = location.hash.split('/')[1] || '';
     if (v === 'log' && prevView !== 'log') logSel = {};
     if (v !== 'car') filter = 'all';
+    menuOpen = false;
     prevView = v;
     route(); window.scrollTo(0, 0);
   });
@@ -426,6 +484,7 @@
     }
     else if (act === 'logcar') { logSel = {}; location.replace('#/log/' + v); }
     else if (act === 'milescar') { location.replace('#/miles/' + v); }
+    else if (act === 'scancar') { location.replace('#/scan/' + v); }
     else if (act === 'dellog') {
       if (!confirm('Delete this entry?')) return;
       db.log = db.log.filter(function (l) { return l.id !== v; }); save(); route(); toast('Entry deleted');
