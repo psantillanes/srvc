@@ -171,7 +171,7 @@
       pad(t.getMonth() + 1, 2) + '.' + pad(t.getDate(), 2) + '.' + t.getFullYear() + ' // ' + db.cars.length + ' UNITS</div></header>' +
       '<div class="m s10 row mute" style="margin-top:-6px"><span>Vehicle Service Control</span><span>//////</span><span>Rec-local</span></div>';
 
-    db.cars.forEach(function (c) {
+    db.cars.forEach(function (c, ci) {
       var odo = odoLatest(c);
       var spec = [c.make, c.year].filter(Boolean).join(' · ');
       var list = sorted(c), n = counts(list);
@@ -182,7 +182,7 @@
       if (n.ok) cols.push([n.ok, 'c-ok', 'OK']);
       if (n.unk) cols.push([n.unk, 'c-unk', 'No rec']);
       var tpl = cols.map(function (x) { return 'minmax(max-content, ' + x[0] + 'fr)'; }).join(' ');
-      h += '<a class="card" href="#/car/' + c.id + '" aria-label="Open unit ' + esc(c.unit) + ', ' + esc(c.name) + '">' +
+      h += '<a class="card" ' + (ci === 0 ? 'style="margin-top:12px" ' : '') + 'href="#/car/' + c.id + '" aria-label="Open unit ' + esc(c.unit) + ', ' + esc(c.name) + '">' +
         '<div class="strip m"><span>[ Unit ' + esc(c.unit) + ' ]</span><span>' + esc([c.make, c.year].concat(c.engine ? [c.engine.split(' ').slice(-2).join(' ')] : []).join(' · ')) + '</span><span>▸</span></div>' +
         '<div class="row" style="padding:12px 12px 0;align-items:flex-start"><div class="x" style="font-size:' + fitSize(c.name, 250, 80) + 'px;line-height:.82">' + esc(c.name) + '</div>' +
         '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' + REG +
@@ -200,7 +200,7 @@
         '</div></a>';
     });
 
-    h += '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.3</span></footer>';
+    h += '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.4</span></footer>';
     return h;
   }
 
@@ -394,7 +394,7 @@
       '<button class="btn solid" data-act="export">Export backup <span class="arr">▸▸▸</span></button>' +
       '<label class="btn" for="imp">Import backup</label><input id="imp" type="file" accept="application/json,.json" class="sr" data-act="import">' +
       '<button class="btn danger" data-act="reset" style="margin-top:20px">Reset to starting data</button>' +
-      '<footer class="foot m"><span>SRVC v1.3</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
+      '<footer class="foot m"><span>SRVC v1.4</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
   }
 
   function viewMissing() { return '<nav class="nav m"><a href="#/">◂ Units</a></nav><div class="empty m box">Not found.</div>'; }
@@ -424,7 +424,7 @@
   var lastCar = null, menuOpen = false, dockCtx = null;
   var dock = document.createElement('div'); dock.id = 'dockwrap'; document.body.appendChild(dock);
   var mini = document.createElement('div'); mini.id = 'mini'; mini.setAttribute('aria-hidden', 'true'); document.body.appendChild(mini);
-  var GRID = function (col) { return '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="2" y="2" width="8" height="8" fill="none" stroke="' + col + '" stroke-width="2"/><rect x="12" y="2" width="8" height="8" fill="none" stroke="' + col + '" stroke-width="2"/><rect x="2" y="12" width="18" height="8" fill="none" stroke="' + col + '" stroke-width="2"/></svg>'; };
+  var GRID = function (col) { return '<svg width="20" height="20" viewBox="0 0 22 22" style="transform:translate(3px,-2px)" aria-hidden="true"><circle cx="11" cy="11" r="9" fill="none" stroke="' + col + '" stroke-width="2"/><path d="M2 11.5h6.2M13.8 11.5H20M11 14.2V20" stroke="' + col + '" stroke-width="2"/><circle cx="11" cy="11.5" r="2.8" fill="none" stroke="' + col + '" stroke-width="2"/><path d="M11 1v3.2" stroke="#EE4B1A" stroke-width="2.6"/></svg>'; };
   function renderDock(on, ctx) {
     document.body.classList.toggle('has-dock', on);
     dockCtx = ctx;
@@ -444,8 +444,7 @@
     h += '<nav id="dock" aria-label="Main"><a href="#/" class="d-home"' + (home ? ' aria-current="page"' : '') + ' aria-label="All units">' + GRID(home ? '#ECEBE6' : '#161616') + '</a>' +
       db.cars.map(function (c) {
         var n = counts(sorted(c)).ovr;
-        return '<a href="#/car/' + c.id + '" class="d-car x"' + (ctx === c.id ? ' aria-current="page"' : '') + ' aria-label="' + esc(c.name) + (n ? ', ' + n + ' overdue' : '') + '">' + esc(c.name) +
-          (n ? '<span class="badge m">' + n + '</span>' : '') + '</a>';
+        return '<a href="#/car/' + c.id + '" class="d-car x"' + (ctx === c.id ? ' aria-current="page"' : '') + ' aria-label="' + esc(c.name) + (n ? ', ' + n + ' overdue' : '') + '">' + esc(c.name) + '</a>';
       }).join('') +
       '<button class="d-log m" data-dock="menu" aria-haspopup="menu" aria-expanded="' + menuOpen + '">' +
       (menuOpen ? '<svg width="16" height="16" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="3"/></svg>Close'
