@@ -32,6 +32,11 @@
         db.log = db.log.concat(clone(seed.log.filter(function (l) { return l.car === 'xc40'; })));
       }
     }
+    if (v < 3) {
+      var x = db.cars.filter(function (c) { return c.id === 'xc40'; })[0];
+      var xs = seed.cars.filter(function (c) { return c.id === 'xc40'; })[0];
+      if (x && xs && !x.paintCode) { x.paintCode = xs.paintCode; x.paintName = xs.paintName; x.paintHex = xs.paintHex; }
+    }
     db.version = seed.version;
     save();
   }
@@ -179,10 +184,10 @@
       var tpl = cols.map(function (x) { return 'minmax(max-content, ' + x[0] + 'fr)'; }).join(' ');
       h += '<a class="card" href="#/car/' + c.id + '" aria-label="Open unit ' + esc(c.unit) + ', ' + esc(c.name) + '">' +
         '<div class="strip m"><span>[ Unit ' + esc(c.unit) + ' ]</span><span>' + esc([c.make, c.year].concat(c.engine ? [c.engine.split(' ').slice(-2).join(' ')] : []).join(' · ')) + '</span><span>▸</span></div>' +
-        '<div class="row" style="padding:12px 12px 0;align-items:flex-start"><div class="x" style="font-size:' + fitSize(c.name, 250, 96) + 'px;line-height:.82">' + esc(c.name) + '</div>' +
+        '<div class="row" style="padding:12px 12px 0;align-items:flex-start"><div class="x" style="font-size:' + fitSize(c.name, 250, 80) + 'px;line-height:.82">' + esc(c.name) + '</div>' +
         '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' + REG +
         '<div class="m s8" style="text-align:right;line-height:1.4">' + esc(c.trim || '') + '<br>' + esc((c.engine || '').split(' ')[0]) + '</div></div></div>' +
-        '<div class="row" style="padding:14px 12px 12px;align-items:flex-end;border-bottom:1px dashed #161616"><div>' +
+        '<div class="row" style="padding:10px 12px 10px;align-items:flex-end;border-bottom:1px dashed #161616"><div>' +
         '<div class="m s8 mute">Odometer</div><div class="m b" style="font-size:34px;letter-spacing:0;line-height:1">' + odoFmt(odo ? odo.miles : null) + '<span style="font-size:13px"> MI</span></div></div>' +
         (odo ? '<div class="m s8 mute" style="text-align:right;line-height:1.5">Last entry<br>' + fmtDate(lastDate(c)) + '</div></div>'
              : '<div class="m s8" style="text-align:right;line-height:1.5">Status<br><b>Awaiting data</b></div></div>') +
@@ -190,12 +195,12 @@
         cols.map(function (x) { return '<div class="' + x[1] + '"></div>'; }).join('') + '</div>' +
         '<div class="m s10 b" style="display:grid;gap:8px;margin-top:5px;grid-template-columns:' + tpl + '">' +
         cols.map(function (x) { return '<span>' + p2(x[0]) + ' ' + x[2] + '</span>'; }).join('') + '</div>' +
-        (next ? '<div class="m s11 row" style="margin-top:12px;border:1.5px solid #161616;padding:8px 10px"><span>Next ▸ <b>' + esc(next.it.name) + '</b></span>' + chip(next.s) + '</div>'
-              : '<div class="m s11" style="margin-top:12px;border:1.5px solid #161616;padding:8px 10px">All items nominal</div>') +
+        (next ? '<div class="m s11 row" style="margin-top:10px;border:1.5px solid #161616;padding:6px 10px"><span>Next ▸ <b>' + esc(next.it.name) + '</b></span>' + chip(next.s) + '</div>'
+              : '<div class="m s11" style="margin-top:10px;border:1.5px solid #161616;padding:6px 10px">All items nominal</div>') +
         '</div></a>';
     });
 
-    h += '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.2</span></footer>';
+    h += '<footer class="foot m"><a href="#/data">Data // stored on device ▸</a>' + BARCODE + '<span>v1.3</span></footer>';
     return h;
   }
 
@@ -211,8 +216,8 @@
 
     var h = '<nav class="nav m"><a href="#/">◂ Units</a><span class="s10 mute">Unit ' + esc(c.unit) + ' / ' + p2(db.cars.length) + '</span></nav>' +
       '<section class="box" id="hero"><div class="row" style="padding:12px 12px 10px;border-bottom:2px solid #161616;align-items:flex-end">' +
-      '<h1 class="x" style="margin:0;font-size:' + fitSize(c.name, 260, 104) + 'px;line-height:.8">' + esc(c.name) + '</h1>' +
-      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:16px;padding-bottom:6px;padding-right:4px">' + swatch +
+      '<h1 class="x" style="align-self:center;margin:0;font-size:' + fitSize(c.name, 260, 104) + 'px;line-height:.8">' + esc(c.name) + '</h1>' +
+      '<div style="align-self:stretch;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;padding:2px 4px 6px 0">' + swatch +
       '<div class="m s8" style="text-align:right;line-height:1.4">' + esc(c.paintCode || '') + '<br>' + esc(c.paintName || '') + '</div></div></div>' +
       '<div class="spec m">' + specs.map(function (s) { return '<div><div class="k">' + s[0] + '</div><div class="v">' + esc(s[1] || '—') + '</div></div>'; }).join('') + '</div></section>' +
 
@@ -389,7 +394,7 @@
       '<button class="btn solid" data-act="export">Export backup <span class="arr">▸▸▸</span></button>' +
       '<label class="btn" for="imp">Import backup</label><input id="imp" type="file" accept="application/json,.json" class="sr" data-act="import">' +
       '<button class="btn danger" data-act="reset" style="margin-top:20px">Reset to starting data</button>' +
-      '<footer class="foot m"><span>SRVC v1.2</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
+      '<footer class="foot m"><span>SRVC v1.3</span>' + BARCODE + '<span>' + db.log.length + ' records</span></footer>';
   }
 
   function viewMissing() { return '<nav class="nav m"><a href="#/">◂ Units</a></nav><div class="empty m box">Not found.</div>'; }

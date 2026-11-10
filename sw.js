@@ -1,5 +1,5 @@
 // Offline cache. Bump VERSION whenever any file changes so phones pick up the update.
-var VERSION = 'srvc-v1.2.0';
+var VERSION = 'srvc-v1.3.0';
 var FILES = ['./', 'index.html', 'styles.css', 'seed.js', 'app.js', 'manifest.webmanifest',
   'fonts/archivo.woff2', 'fonts/plexmono-400.woff2', 'fonts/plexmono-500.woff2', 'fonts/plexmono-600.woff2',
   'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];

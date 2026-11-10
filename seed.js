@@ -2,7 +2,7 @@
 // Intervals: mi = miles, mo = months. "last" = most recent known service.
 // last.assumed marks a base date used because no record exists.
 window.SRVC_SEED = {
-  version: 2,
+  version: 3,
   cars: [
     {
       id: 'gti', unit: '01', name: 'GTI',
@@ -35,7 +35,7 @@ window.SRVC_SEED = {
       id: 'xc40', unit: '02', name: 'XC40',
       make: 'Volvo', model: 'XC40', year: 2019, trim: 'R-Design',
       engine: 'T5 2.0 Drive-E', trans: 'Aisin 8-spd · AWD', oil: 'VCC RBS0-2AE 0W-20',
-      vin: '', paintCode: '', paintName: 'White', paintHex: '#F4F4F0',
+      vin: '', paintCode: '707', paintName: 'White', paintHex: '#F4F4F0',
       inService: '2018-02-28', shop: 'Private Volvo mechanic',
       odo: [
         { date: '2025-12-19', miles: 53656 },

@@ -107,14 +107,14 @@ select.in{background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%)
 .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .note{border:1.5px dashed var(--ink);padding:10px 12px;font-size:10px;line-height:1.6}
 
-.foot{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--mute);border-top:1px solid var(--ink);padding-top:7px;margin-top:auto}
-.foot a{min-height:32px;display:flex;align-items:center}
+.foot{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--mute);border-top:1px solid var(--ink);padding-top:5px;margin-top:auto}
+.foot a{min-height:24px;display:flex;align-items:center}
 .empty{padding:16px 12px;font-size:10px;line-height:1.6}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--paper);font-family:var(--mono);text-transform:uppercase;font-size:11px;font-weight:600;padding:12px 16px;letter-spacing:.04em;z-index:10;max-width:90vw}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 /* dock (v1.1) */
-body.has-dock #app{padding-bottom:calc(max(env(safe-area-inset-bottom),12px) + 84px)}
+body.has-dock #app{padding-bottom:calc(max(env(safe-area-inset-bottom),12px) + 64px)}
 #dock{position:fixed;z-index:20;left:max(12px,calc(50% - 248px));right:max(12px,calc(50% - 248px));bottom:max(env(safe-area-inset-bottom),12px);height:52px;
   display:grid;grid-template-columns:56px repeat(2,minmax(0,1fr)) 1.25fr;border:2px solid var(--ink);background:var(--paper);box-shadow:0 0 0 12px var(--paper),0 -8px 20px 12px rgba(236,235,230,.85)}
 #dock::after{content:'';position:absolute;left:-14px;right:-14px;top:calc(100% + 2px);height:60px;background:var(--paper)}
